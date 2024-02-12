@@ -9,7 +9,7 @@ from pyvis.network import Network
 
 async def _scan(url, session):
     try:
-        r = await session.get(url)
+        r = await session.get(url, verify=False)
 
         content_type = r.headers["content-type"]
         if "text/html" not in content_type:
@@ -75,6 +75,7 @@ class URLGraph:
                 asyncio.create_task(self._search(root, session, root))
 
             await asyncio.sleep(time)
+            await session.close()
 
         with alive_bar() as self.bar:
             loop = asyncio.get_event_loop()
